@@ -115,7 +115,7 @@ This task creates an APIM product.
 		}
 		Write-Host "Product is $($product)"
 		$baseurl="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)"
-		$producturl="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)?api-version=2017-03-01"
+		$producturl="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)?api-version=2021-08-01"
 		Write-Host $producturl
 		if($displayName -eq $null -or $displayName -eq "")
 		{
@@ -167,8 +167,8 @@ This task creates an APIM product.
 		}
 		$odataFilter=$odataFilter.Substring(0,$odataFilter.Length-8)
 		$odataFilter+=")"
-		$existingGroupsUri="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/groups?api-version=2017-03-01&"+'$filter='+"$($odataFilter)"
-		$existingProductGroupsUri="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)/groups?api-version=2018-01-01"
+		$existingGroupsUri="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/groups?api-version=2021-08-01&"+'$filter='+"$($odataFilter)"
+		$existingProductGroupsUri="$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)/groups?api-version=2021-08-01"
 		$existingProductGroups=Invoke-WebRequest -UseBasicParsing -Uri $existingProductGroupsUri -Headers $headers|ConvertFrom-Json
 		Write-Host "getting existing groups $($existingGroupsUri)"
 		$existingGroups=Invoke-WebRequest -UseBasicParsing -Uri $existingGroupsUri -Headers $headers|ConvertFrom-Json
@@ -181,9 +181,9 @@ This task creates an APIM product.
 				{
 					write-host "creating group $($group)"
 					$groupBody="{'properties':{'displayName':'$($group)'}}"
-					Invoke-WebRequest -UseBasicParsing -Uri "$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/groups/$($group)?api-version=2017-03-01" -Method Put -ContentType application/json -Body $groupBody -Headers $headers
+					Invoke-WebRequest -UseBasicParsing -Uri "$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/groups/$($group)?api-version=2021-08-01" -Method Put -ContentType application/json -Body $groupBody -Headers $headers
 				}
-				$groupapiurl = "$($baseurl)/products/$($product)/groups/$($group)?api-version=2018-01-01"
+				$groupapiurl = "$($baseurl)/products/$($product)/groups/$($group)?api-version=2021-08-01"
 				Write-Host "Adding group to product $($groupapiurl)"
 				Invoke-WebRequest -UseBasicParsing -Uri $groupapiurl -Headers $headers -Method Put -Body $JsonPolicies -ContentType "application/json"
 			}
@@ -200,7 +200,7 @@ This task creates an APIM product.
 			if($null -eq ($g=$groups|where {$_ -eq $existingProductGroup.name}))
 			{
 				write-host "deleting product group $($existingProductGroup.name)"
-				Invoke-Webrequest -UseBasicParsing -Uri "$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)/groups/$($existingProductGroup.name)?api-version=2017-03-01" -Method Delete -Headers $headers
+				Invoke-Webrequest -UseBasicParsing -Uri "$($Endpoint.Url)subscriptions/$($Endpoint.Data.SubscriptionId)/resourceGroups/$($rg)/providers/Microsoft.ApiManagement/service/$($portal)/products/$($product)/groups/$($existingProductGroup.name)?api-version=-03-01" -Method Delete -Headers $headers
 			}
 		}
 
@@ -208,7 +208,7 @@ This task creates an APIM product.
 		{
 			try
 			{
-				$policyapiurl=	"$($baseurl)/products/$($product)/policies/policy?api-version=2017-03-01"
+				$policyapiurl=	"$($baseurl)/products/$($product)/policies/policy?api-version=2021-08-01"
 				$JsonPolicies = "{
 				  `"properties`": {					
 					`"policyContent`":`""+$PolicyContent+"`"
